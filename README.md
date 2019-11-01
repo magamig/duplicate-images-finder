@@ -1,4 +1,6 @@
 # Duplicate Images Finder
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmagamig%2Fduplicate_images_finder.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmagamig%2Fduplicate_images_finder?ref=badge_shield)
+
 
 Find and delete duplicate images inside a directory.
 
@@ -24,6 +26,9 @@ Find and delete duplicate images inside a directory.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmagamig%2Fduplicate_images_finder.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmagamig%2Fduplicate_images_finder?ref=badge_large)
 
 ## References
 
