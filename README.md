@@ -1,4 +1,5 @@
-# Duplicate Images Finder
+# <img src="https://i.imgur.com/SUpMOAo.png" height=200/>
+
 
 [![Documentation Status](https://img.shields.io/badge/docs-stable-brightgreen.svg)](http://htmlpreview.github.io/?https://github.com/magamig/duplicate_images_finder/blob/master/docs/main.html)
 [![Maintainability](https://api.codeclimate.com/v1/badges/5610bfa34f6ce56a9052/maintainability)](https://codeclimate.com/github/magamig/duplicate_images_finder/maintainability)
