@@ -1,6 +1,7 @@
 # Duplicate Images Finder
 
 [![Documentation Status](https://img.shields.io/badge/docs-stable-brightgreen.svg)](http://htmlpreview.github.io/?https://github.com/magamig/duplicate_images_finder/blob/master/docs/main.html)
+[![Maintainability](https://api.codeclimate.com/v1/badges/5610bfa34f6ce56a9052/maintainability)](https://codeclimate.com/github/magamig/duplicate_images_finder/maintainability)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmagamig%2Fduplicate_images_finder.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmagamig%2Fduplicate_images_finder?ref=badge_shield)
 
 Find and delete duplicate images inside a directory.
