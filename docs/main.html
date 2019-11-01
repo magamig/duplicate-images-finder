@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.1" />
+<title>duplicate_images_finder.main API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>duplicate_images_finder.main</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import sys
+import os
+import argparse
+import cv2 as cv
+
+
+FEATURES_DISTANCE = 0.3 
+MIN_MATCHES = 50 
+
+
+def collect_imgs(directory):
+        &#34;&#34;&#34;
+        Collect images in directory.
+
+        Parameters
+        ----------
+        directory : str
+                Directory with the images to check for similarities
+
+        Returns
+        -------
+        imgs : list(dict)
+                List of the images to compare
+        &#34;&#34;&#34;
+
+        imgs = []
+        
+        for file in os.listdir(directory):
+                if(file.lower().endswith((&#39;.png&#39;, &#39;.jpg&#39;, &#39;.jpeg&#39;, &#39;.tiff&#39;, &#39;.bmp&#39;, &#39;.gif&#39;))):
+                        path = os.path.join(directory, file)
+                        imgs.append({
+                                &#39;f&#39;: cv.imread(path, cv.IMREAD_GRAYSCALE),
+                                &#39;p&#39;: path
+                        });
+
+        return imgs
+
+def detect_features(imgs):
+        &#34;&#34;&#34;
+        Detect and computes features and descriptors. 
+
+        SIFT (Scale-Invariant Feature Transform) feature detection algorithm is
+        used to calculate the features and descriptors of each image.
+
+        Parameters
+        ----------
+        imgs : list(dict)
+                List of the images to compare
+
+        Returns
+        -------
+        imgs : list(str)
+                List of the images to compare with keypoins and descriptors
+        &#34;&#34;&#34;
+
+        sift = cv.xfeatures2d.SIFT_create()
+
+        for img in imgs:
+                img[&#39;kp&#39;], img[&#39;des&#39;] = sift.detectAndCompute(img[&#39;f&#39;], None)
+
+        return imgs
+
+def similarity_check(imgs):
+        &#34;&#34;&#34;
+        Checks Similarity.
+
+        Complexity: O(n!) instead of the naive approach which is O(n^2).
+        Using FLANN (Fast Library for Approximate Nearest Neighbors) matching
+        algorithm for comparing each of the images&#39; descriptors.
+
+        Parameters
+        ----------
+        imgs : list(dict)
+                List of the images to compare
+
+        Returns
+        -------
+        duplicates : list(str)
+                List of the lowest resolution duplicate images
+        &#34;&#34;&#34;
+
+        duplicates = []
+        
+        for i1 in range(len(imgs)):
+                for i2 in range(i1 + 1, len(imgs)):
+                        FLANN_INDEX_KDTREE = 1
+                        index_params = dict(
+                                algorithm = FLANN_INDEX_KDTREE,
+                                trees = 5
+                        )
+
+                        search_params = dict(checks=50)
+                        flann = cv.FlannBasedMatcher(index_params, search_params)
+                        matches = flann.knnMatch(imgs[i1][&#39;des&#39;], imgs[i2][&#39;des&#39;], k=2)
+                        matchesCount = 0
+                        for i,(m,n) in enumerate(matches):
+                                if m.distance &lt; FEATURES_DISTANCE * n.distance:
+                                        matchesCount += 1
+
+                        if(matchesCount &gt; MIN_MATCHES):
+                                print(&#39;[DUPLICATE FOUND]&#39;, imgs[i1][&#39;p&#39;], imgs[i2][&#39;p&#39;])
+                                # adds the lower resolution image to the deletion list
+                                h1, w1 = imgs[i1][&#39;f&#39;].shape[:2]
+                                h2, w2 = imgs[i2][&#39;f&#39;].shape[:2]
+                                duplicates.append(imgs[i2 if h1*w1 &gt; h2*w2 else i1][&#39;p&#39;])
+
+        return duplicates                       
+
+
+def delete(duplicates):
+        &#34;&#34;&#34;
+        Removes duplicated images.
+
+        Parameters
+        ----------
+        duplicates : int
+                Description of arg1
+        &#34;&#34;&#34;
+
+        for path in duplicates:
+                os.remove(path)
+                print(&#39;[DELETED]&#39;, path)
+
+
+def argparser():
+        &#34;&#34;&#34;
+        Parses arguments.
+
+        For more information run ``python main.py -h``.
+
+        Returns
+        -------
+        args : dict
+                Parsed arguments
+        &#34;&#34;&#34;
+
+        parser = argparse.ArgumentParser()
+        parser.add_argument(&#34;directory&#34;, type=str,
+                help=&#34;directory with the images&#34;)
+        parser.add_argument(&#34;-d&#34;, &#34;--delete&#34;, action=&#39;store_true&#39;,
+                help=&#34;delete the duplicate images found with smaller res&#34;)
+        parser.add_argument(&#34;-s&#34;, &#34;--silent&#34;, action=&#39;store_true&#39;,
+                help=&#34;quiet execution without logging&#34;)
+        parser.add_argument(&#39;--min_matches&#39;, type=int,
+                help=&#34;minimum number of matching features to accept the images as being similar&#34;)
+        parser.add_argument(&#39;--features_distance&#39;, type=float,
+                help=&#34;[0,1] - higher number results in more matching features but with less accuracy&#34;)
+        args = parser.parse_args()
+
+        if(args.silent):
+                sys.stdout = open(os.devnull, &#39;a&#39;)
+        if(args.min_matches):
+                MIN_MATCHES = args.min_matches
+        if(args.features_distance):
+                FEATURES_DISTANCE = args.features_distance
+        
+        return args
+
+
+def main():
+        &#34;&#34;&#34;
+        Main function.
+        &#34;&#34;&#34;
+
+        args = argparser()
+        imgs = collect_imgs(args.directory)
+        imgs = detect_features(imgs)
+        duplicates = similarity_check(imgs)
+        if args.delete: 
+                delete(duplicates)
+
+
+if __name__ == &#34;__main__&#34;:
+        main()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="duplicate_images_finder.main.argparser"><code class="name flex">
+<span>def <span class="ident">argparser</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Parses arguments.</p>
+<p>For more information run <code>python main.py -h</code>.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>args</code></strong> :&ensp;<code>dict</code></dt>
+<dd>Parsed arguments</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def argparser():
+        &#34;&#34;&#34;
+        Parses arguments.
+
+        For more information run ``python main.py -h``.
+
+        Returns
+        -------
+        args : dict
+                Parsed arguments
+        &#34;&#34;&#34;
+
+        parser = argparse.ArgumentParser()
+        parser.add_argument(&#34;directory&#34;, type=str,
+                help=&#34;directory with the images&#34;)
+        parser.add_argument(&#34;-d&#34;, &#34;--delete&#34;, action=&#39;store_true&#39;,
+                help=&#34;delete the duplicate images found with smaller res&#34;)
+        parser.add_argument(&#34;-s&#34;, &#34;--silent&#34;, action=&#39;store_true&#39;,
+                help=&#34;quiet execution without logging&#34;)
+        parser.add_argument(&#39;--min_matches&#39;, type=int,
+                help=&#34;minimum number of matching features to accept the images as being similar&#34;)
+        parser.add_argument(&#39;--features_distance&#39;, type=float,
+                help=&#34;[0,1] - higher number results in more matching features but with less accuracy&#34;)
+        args = parser.parse_args()
+
+        if(args.silent):
+                sys.stdout = open(os.devnull, &#39;a&#39;)
+        if(args.min_matches):
+                MIN_MATCHES = args.min_matches
+        if(args.features_distance):
+                FEATURES_DISTANCE = args.features_distance
+        
+        return args</code></pre>
+</details>
+</dd>
+<dt id="duplicate_images_finder.main.collect_imgs"><code class="name flex">
+<span>def <span class="ident">collect_imgs</span></span>(<span>directory)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Collect images in directory.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>directory</code></strong> :&ensp;<code>str</code></dt>
+<dd>Directory with the images to check for similarities</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>imgs</code></strong> :&ensp;<code>list</code>(<code>dict</code>)</dt>
+<dd>List of the images to compare</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def collect_imgs(directory):
+        &#34;&#34;&#34;
+        Collect images in directory.
+
+        Parameters
+        ----------
+        directory : str
+                Directory with the images to check for similarities
+
+        Returns
+        -------
+        imgs : list(dict)
+                List of the images to compare
+        &#34;&#34;&#34;
+
+        imgs = []
+        
+        for file in os.listdir(directory):
+                if(file.lower().endswith((&#39;.png&#39;, &#39;.jpg&#39;, &#39;.jpeg&#39;, &#39;.tiff&#39;, &#39;.bmp&#39;, &#39;.gif&#39;))):
+                        path = os.path.join(directory, file)
+                        imgs.append({
+                                &#39;f&#39;: cv.imread(path, cv.IMREAD_GRAYSCALE),
+                                &#39;p&#39;: path
+                        });
+
+        return imgs</code></pre>
+</details>
+</dd>
+<dt id="duplicate_images_finder.main.delete"><code class="name flex">
+<span>def <span class="ident">delete</span></span>(<span>duplicates)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Removes duplicated images.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>duplicates</code></strong> :&ensp;<code>int</code></dt>
+<dd>Description of arg1</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete(duplicates):
+        &#34;&#34;&#34;
+        Removes duplicated images.
+
+        Parameters
+        ----------
+        duplicates : int
+                Description of arg1
+        &#34;&#34;&#34;
+
+        for path in duplicates:
+                os.remove(path)
+                print(&#39;[DELETED]&#39;, path)</code></pre>
+</details>
+</dd>
+<dt id="duplicate_images_finder.main.detect_features"><code class="name flex">
+<span>def <span class="ident">detect_features</span></span>(<span>imgs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Detect and computes features and descriptors. </p>
+<p>SIFT (Scale-Invariant Feature Transform) feature detection algorithm is
+used to calculate the features and descriptors of each image.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>imgs</code></strong> :&ensp;<code>list</code>(<code>dict</code>)</dt>
+<dd>List of the images to compare</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>imgs</code></strong> :&ensp;<code>list</code>(<code>str</code>)</dt>
+<dd>List of the images to compare with keypoins and descriptors</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def detect_features(imgs):
+        &#34;&#34;&#34;
+        Detect and computes features and descriptors. 
+
+        SIFT (Scale-Invariant Feature Transform) feature detection algorithm is
+        used to calculate the features and descriptors of each image.
+
+        Parameters
+        ----------
+        imgs : list(dict)
+                List of the images to compare
+
+        Returns
+        -------
+        imgs : list(str)
+                List of the images to compare with keypoins and descriptors
+        &#34;&#34;&#34;
+
+        sift = cv.xfeatures2d.SIFT_create()
+
+        for img in imgs:
+                img[&#39;kp&#39;], img[&#39;des&#39;] = sift.detectAndCompute(img[&#39;f&#39;], None)
+
+        return imgs</code></pre>
+</details>
+</dd>
+<dt id="duplicate_images_finder.main.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Main function.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def main():
+        &#34;&#34;&#34;
+        Main function.
+        &#34;&#34;&#34;
+
+        args = argparser()
+        imgs = collect_imgs(args.directory)
+        imgs = detect_features(imgs)
+        duplicates = similarity_check(imgs)
+        if args.delete: 
+                delete(duplicates)</code></pre>
+</details>
+</dd>
+<dt id="duplicate_images_finder.main.similarity_check"><code class="name flex">
+<span>def <span class="ident">similarity_check</span></span>(<span>imgs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Checks Similarity.</p>
+<p>Complexity: O(n!) instead of the naive approach which is O(n^2).
+Using FLANN (Fast Library for Approximate Nearest Neighbors) matching
+algorithm for comparing each of the images' descriptors.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>imgs</code></strong> :&ensp;<code>list</code>(<code>dict</code>)</dt>
+<dd>List of the images to compare</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>duplicates</code></strong> :&ensp;<code>list</code>(<code>str</code>)</dt>
+<dd>List of the lowest resolution duplicate images</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def similarity_check(imgs):
+        &#34;&#34;&#34;
+        Checks Similarity.
+
+        Complexity: O(n!) instead of the naive approach which is O(n^2).
+        Using FLANN (Fast Library for Approximate Nearest Neighbors) matching
+        algorithm for comparing each of the images&#39; descriptors.
+
+        Parameters
+        ----------
+        imgs : list(dict)
+                List of the images to compare
+
+        Returns
+        -------
+        duplicates : list(str)
+                List of the lowest resolution duplicate images
+        &#34;&#34;&#34;
+
+        duplicates = []
+        
+        for i1 in range(len(imgs)):
+                for i2 in range(i1 + 1, len(imgs)):
+                        FLANN_INDEX_KDTREE = 1
+                        index_params = dict(
+                                algorithm = FLANN_INDEX_KDTREE,
+                                trees = 5
+                        )
+
+                        search_params = dict(checks=50)
+                        flann = cv.FlannBasedMatcher(index_params, search_params)
+                        matches = flann.knnMatch(imgs[i1][&#39;des&#39;], imgs[i2][&#39;des&#39;], k=2)
+                        matchesCount = 0
+                        for i,(m,n) in enumerate(matches):
+                                if m.distance &lt; FEATURES_DISTANCE * n.distance:
+                                        matchesCount += 1
+
+                        if(matchesCount &gt; MIN_MATCHES):
+                                print(&#39;[DUPLICATE FOUND]&#39;, imgs[i1][&#39;p&#39;], imgs[i2][&#39;p&#39;])
+                                # adds the lower resolution image to the deletion list
+                                h1, w1 = imgs[i1][&#39;f&#39;].shape[:2]
+                                h2, w2 = imgs[i2][&#39;f&#39;].shape[:2]
+                                duplicates.append(imgs[i2 if h1*w1 &gt; h2*w2 else i1][&#39;p&#39;])
+
+        return duplicates                       </code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="duplicate_images_finder" href="index.html">duplicate_images_finder</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="duplicate_images_finder.main.argparser" href="#duplicate_images_finder.main.argparser">argparser</a></code></li>
+<li><code><a title="duplicate_images_finder.main.collect_imgs" href="#duplicate_images_finder.main.collect_imgs">collect_imgs</a></code></li>
+<li><code><a title="duplicate_images_finder.main.delete" href="#duplicate_images_finder.main.delete">delete</a></code></li>
+<li><code><a title="duplicate_images_finder.main.detect_features" href="#duplicate_images_finder.main.detect_features">detect_features</a></code></li>
+<li><code><a title="duplicate_images_finder.main.main" href="#duplicate_images_finder.main.main">main</a></code></li>
+<li><code><a title="duplicate_images_finder.main.similarity_check" href="#duplicate_images_finder.main.similarity_check">similarity_check</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 # Duplicate Images Finder
 
+[![Documentation Status](https://img.shields.io/badge/docs-stable-brightgreen.svg)](http://htmlpreview.github.io/?https://github.com/magamig/duplicate_images_finder/blob/master/docs/main.html)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmagamig%2Fduplicate_images_finder.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmagamig%2Fduplicate_images_finder?ref=badge_shield)
 
 Find and delete duplicate images inside a directory.
@@ -11,12 +12,40 @@ Find and delete duplicate images inside a directory.
 [DUPLICATE FOUND] sample_images/road.jpg sample_images/road_duplicate.jpg
 [DELETED] sample_images/road_duplicate.jpg
 ```
+```bash
+> python main.py -h
+usage: main.py [-h] [-d] [-s] [--min_matches MIN_MATCHES]
+               [--features_distance FEATURES_DISTANCE]
+               directory
+
+positional arguments:
+  directory             directory with the images
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d, --delete          delete the duplicate images found with smaller res
+  -s, --silent          quiet execution without logging
+  --min_matches MIN_MATCHES
+                        minimum number of matching features to accept the
+                        images as being similar
+  --features_distance FEATURES_DISTANCE
+                        [0,1] - higher number results in more matching
+                        features but with less accuracy
+```
 
 ##### Similar / Duplicate Images
 ![](example_duplicate.png)
 
 ##### Different Images
 ![](example_not_duplicate.png)
+
+
+## Requirements
+
+Before running this project you need to install its requirements.
+```bash
+> pip install -r requirements.txt
+```
 
 ## Built With
 

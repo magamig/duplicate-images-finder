@@ -3,11 +3,26 @@ import os
 import argparse
 import cv2 as cv
 
+
 FEATURES_DISTANCE = 0.3 
 MIN_MATCHES = 50 
 
-# Creates list with the images of the directory
+
 def collect_imgs(directory):
+	"""
+	Collect images in directory.
+
+	Parameters
+	----------
+	directory : str
+		Directory with the images to check for similarities
+
+	Returns
+	-------
+	imgs : list(dict)
+		List of the images to compare
+	"""
+
 	imgs = []
 	
 	for file in os.listdir(directory):
@@ -20,17 +35,54 @@ def collect_imgs(directory):
 
 	return imgs
 
-# Feature matching 
-# Complexity: O(n!) instead of the naive approach with O(n^2)
+def detect_features(imgs):
+	"""
+	Detect and computes features and descriptors. 
+
+	SIFT (Scale-Invariant Feature Transform) feature detection algorithm is
+	used to calculate the features and descriptors of each image.
+
+	Parameters
+	----------
+	imgs : list(dict)
+		List of the images to compare
+
+	Returns
+	-------
+	imgs : list(str)
+		List of the images to compare with keypoins and descriptors
+	"""
+
+	sift = cv.xfeatures2d.SIFT_create()
+
+	for img in imgs:
+		img['kp'], img['des'] = sift.detectAndCompute(img['f'], None)
+
+	return imgs
+
 def similarity_check(imgs):
+	"""
+	Checks Similarity.
+
+	Complexity: O(n!) instead of the naive approach which is O(n^2).
+	Using FLANN (Fast Library for Approximate Nearest Neighbors) matching
+	algorithm for comparing each of the images' descriptors.
+
+	Parameters
+	----------
+	imgs : list(dict)
+		List of the images to compare
+
+	Returns
+	-------
+	duplicates : list(str)
+		List of the lowest resolution duplicate images
+	"""
+
 	duplicates = []
 	
 	for i1 in range(len(imgs)):
 		for i2 in range(i1 + 1, len(imgs)):
-			sift = cv.xfeatures2d.SIFT_create()
-			kp1, des1 = sift.detectAndCompute(imgs[i1]['f'], None)
-			kp2, des2 = sift.detectAndCompute(imgs[i2]['f'], None)
-
 			FLANN_INDEX_KDTREE = 1
 			index_params = dict(
 				algorithm = FLANN_INDEX_KDTREE,
@@ -39,7 +91,7 @@ def similarity_check(imgs):
 
 			search_params = dict(checks=50)
 			flann = cv.FlannBasedMatcher(index_params, search_params)
-			matches = flann.knnMatch(des1, des2, k=2)
+			matches = flann.knnMatch(imgs[i1]['des'], imgs[i2]['des'], k=2)
 			matchesCount = 0
 			for i,(m,n) in enumerate(matches):
 				if m.distance < FEATURES_DISTANCE * n.distance:
@@ -54,13 +106,34 @@ def similarity_check(imgs):
 
 	return duplicates			
 
-# Remove duplicates
+
 def delete(duplicates):
+	"""
+	Removes duplicated images.
+
+	Parameters
+	----------
+	duplicates : int
+		Description of arg1
+	"""
+
 	for path in duplicates:
 		os.remove(path)
 		print('[DELETED]', path)
 
+
 def argparser():
+	"""
+	Parses arguments.
+
+	For more information run ``python main.py -h``.
+
+	Returns
+	-------
+	args : dict
+		Parsed arguments
+	"""
+
 	parser = argparse.ArgumentParser()
 	parser.add_argument("directory", type=str,
 		help="directory with the images")
@@ -83,13 +156,20 @@ def argparser():
 	
 	return args
 
+
 def main():
+	"""
+	Main function.
+	"""
+
 	args = argparser()
 	imgs = collect_imgs(args.directory)
+	imgs = detect_features(imgs)
 	duplicates = similarity_check(imgs)
 	if args.delete: 
 		delete(duplicates)
 
+
 if __name__ == "__main__":
-    main()
+	main()
 
