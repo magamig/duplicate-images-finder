@@ -1,5 +1,7 @@
 # Duplicate Images Finder
 
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmagamig%2Fduplicate_images_finder.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmagamig%2Fduplicate_images_finder?ref=badge_shield)
+
 Find and delete duplicate images inside a directory.
 
 ## Running
