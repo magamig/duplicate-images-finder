@@ -1,5 +1,4 @@
-# <img src="https://i.imgur.com/SUpMOAo.png" height=200/>
-
+# <img src="https://i.imgur.com/SUpMOAo.png" height=150/>
 
 [![Documentation Status](https://img.shields.io/badge/docs-stable-brightgreen.svg)](http://htmlpreview.github.io/?https://github.com/magamig/duplicate_images_finder/blob/master/docs/main.html)
 [![Maintainability](https://api.codeclimate.com/v1/badges/5610bfa34f6ce56a9052/maintainability)](https://codeclimate.com/github/magamig/duplicate_images_finder/maintainability)
@@ -10,7 +9,7 @@ Find and delete duplicate images inside a directory.
 ## Running
 
 ```bash
-> python main.py 'sample_images/'
+> python main.py -d 'sample_images/'
 [DUPLICATE FOUND] sample_images/road.jpg sample_images/road_duplicate.jpg
 [DELETED] sample_images/road_duplicate.jpg
 ```
@@ -40,7 +39,6 @@ optional arguments:
 
 ##### Different Images
 ![](example_not_duplicate.png)
-
 
 ## Requirements
 

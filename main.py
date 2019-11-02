@@ -35,6 +35,7 @@ def collect_imgs(directory):
 
 	return imgs
 
+
 def detect_features(imgs):
 	"""
 	Detect and computes features and descriptors. 
@@ -59,6 +60,7 @@ def detect_features(imgs):
 		img['kp'], img['des'] = sift.detectAndCompute(img['f'], None)
 
 	return imgs
+
 
 def similarity_check(imgs):
 	"""
@@ -172,4 +174,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-
