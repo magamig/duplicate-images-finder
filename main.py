@@ -4,8 +4,8 @@ import argparse
 import cv2 as cv
 
 
-FEATURES_DISTANCE = 0.3 
-MIN_MATCHES = 50 
+FEATURES_DISTANCE = 0.3
+MIN_MATCHES = 50
 
 
 def collect_imgs(directory):
@@ -24,7 +24,7 @@ def collect_imgs(directory):
 	"""
 
 	imgs = []
-	
+
 	for file in os.listdir(directory):
 		if(file.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif'))):
 			path = os.path.join(directory, file)
@@ -38,7 +38,7 @@ def collect_imgs(directory):
 
 def detect_features(imgs):
 	"""
-	Detect and computes features and descriptors. 
+	Detect and computes features and descriptors.
 
 	SIFT (Scale-Invariant Feature Transform) feature detection algorithm is
 	used to calculate the features and descriptors of each image.
@@ -54,7 +54,7 @@ def detect_features(imgs):
 		List of the images to compare with keypoins and descriptors
 	"""
 
-	sift = cv.xfeatures2d.SIFT_create()
+	sift = cv.SIFT_create()
 
 	for img in imgs:
 		img['kp'], img['des'] = sift.detectAndCompute(img['f'], None)
@@ -82,7 +82,7 @@ def similarity_check(imgs):
 	"""
 
 	duplicates = []
-	
+
 	for i1 in range(len(imgs)):
 		for i2 in range(i1 + 1, len(imgs)):
 			FLANN_INDEX_KDTREE = 1
@@ -106,7 +106,7 @@ def similarity_check(imgs):
 				h2, w2 = imgs[i2]['f'].shape[:2]
 				duplicates.append(imgs[i2 if h1*w1 > h2*w2 else i1]['p'])
 
-	return duplicates			
+	return duplicates
 
 
 def delete(duplicates):
@@ -155,7 +155,7 @@ def argparser():
 		MIN_MATCHES = args.min_matches
 	if(args.features_distance):
 		FEATURES_DISTANCE = args.features_distance
-	
+
 	return args
 
 
@@ -168,7 +168,7 @@ def main():
 	imgs = collect_imgs(args.directory)
 	imgs = detect_features(imgs)
 	duplicates = similarity_check(imgs)
-	if args.delete: 
+	if args.delete:
 		delete(duplicates)
 
 
