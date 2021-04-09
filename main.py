@@ -4,6 +4,7 @@ import argparse
 import cv2 as cv
 import time
 
+
 FEATURES_DISTANCE = 0.3
 MIN_MATCHES = 50
 MAX_KEYPOINTS = 100
