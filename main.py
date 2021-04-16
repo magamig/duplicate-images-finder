@@ -13,7 +13,9 @@ scale_percent = 12 # percent of original size
 
 files = []
 imgs = []
+global img
 resized = []
+features = []
 kp = []
 des = []
 duplicates = []
@@ -61,22 +63,26 @@ def read_images(file):
     imgs.append(cv.imread(file, cv.IMREAD_GRAYSCALE))
                
 
-# def do_all(file):
-#     print('[READING IMAGE]', file)
-#     global imgs
-#     imgs.append(cv.imread(file, cv.IMREAD_GRAYSCALE))
+def do_all(file):
+    print('[Reading image]', file)
+    global img
+    img = cv.imread(file, cv.IMREAD_GRAYSCALE)
     
-#     print('[RESIZING IMAGE]', file)
-#     try:
-#         h1, w1 = imgs.shape[:2]
+    try:
+        h1, w1 = img.shape[:2]
                 
-#         if(h1 >= 800 and w1 >= 800):
-#             width = int(imgs.shape[1] * scale_percent / 100)
-#             height = int(imgs.shape[0] * scale_percent / 100)
-#             dim = (width, height)
-#             imgs = cv.resize(imgs, dim, interpolation = cv.INTER_AREA)
-#     except:
-#         print('[FAILED TO RESIZE]')
+        if(h1 >= 800 and w1 >= 800):
+            width = int(img.shape[1] * scale_percent / 100)
+            height = int(img.shape[0] * scale_percent / 100)
+            dim = (width, height)
+            img = cv.resize(img, dim, interpolation = cv.INTER_AREA)
+    except:
+        print('[FAILED TO RESIZE]')
+
+    return img
+
+
+
 
 def resize_images(img):
 
@@ -90,12 +96,12 @@ def resize_images(img):
             height = int(img.shape[0] * scale_percent / 100)
             dim = (width, height)
             img = cv.resize(img, dim, interpolation = cv.INTER_AREA)
-            resized.append(img)
+            # resized.append(img)
     except:
         print('[FAILED TO RESIZE]')
 
 
-
+    return img
         #resize images to scale factor                
         # for i1 in range(len(imgs)):
         #         try:
@@ -111,16 +117,27 @@ def resize_images(img):
 
         # return imgs
 
-def detect_features(resized):
-        
+def detect_features(img):
+
+#sift detection object max keypoints set globally
+    sift = cv.SIFT_create(MAX_KEYPOINTS)
+    print('[Detecting features]')    
+    k,d = sift.detectAndCompute(img, None)
+
+    return d
+
+
+
         #sift detection object max keypoints set globally
-        sift = cv.SIFT_create(MAX_KEYPOINTS)
-        global kp, des
-        for count, img in enumerate(resized):
-                print('[SCANNING IMAGE]', count)
-                k, d = sift.detectAndCompute(img, None)
-                kp.append(k)
-                des.append(d)
+        # sift = cv.SIFT_create(MAX_KEYPOINTS)
+        # global kp, des
+        # for count, img in enumerate(resized):
+        #         print('[SCANNING IMAGE]', count)
+        #         k, d = sift.detectAndCompute(img, None)
+        #         kp.append(k)
+        #         des.append(d)
+
+
 
 
 def similarity_check(resized):
@@ -245,12 +262,6 @@ def main():
         start_time = time.time()
         
 
-
-        
-
-
-        
-
         args = argparser()
 
         get_file_list(args.directory)
@@ -261,26 +272,45 @@ def main():
         # a_pool = multiprocessing.Pool()
         # result = a_pool.map(collect_imgs, )
 
-        for file in files:
-            read_images(file)
+        # for file in files:
+        #     read_images(file)
 
         # with concurrent.futures.ProcessPoolExecutor() as executor:
-        #     executor.map(read_images,files)
+        #     for file in zip(files, executor.map(read_images,files)):
+        #     	print('this', file)
 
-        for img in imgs:
-            resize_images(img)
+        
+        # for img in imgs:
+        #     resize_images(img)
 
         # with concurrent.futures.ProcessPoolExecutor() as executor:
         #     executor.map(resize_images,imgs)
 
-        # with concurrent.futures.ProcessPoolExecutor() as executor:
-        #     executor.map(do_all,files)
+        # with concurrent.futures.ThreadPoolExecutor() as executor:
+        #     for img in (executor.map(do_all,files)):
+        #      	print(img)
+
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+        	results = executor.map(do_all, files)
+
+       	for result in results:
+       		resized.append(result)
+
+       	with concurrent.futures.ProcessPoolExecutor() as executor:
+        	results = executor.map(detect_features, resized)
+
+       	for result in results:
+       		print(result)
+       		# kp.append(k)
+       		des.append(result)
+
+
 
         # for file in files:
         #     do_all(file)
 
 
-        detect_features(resized)
+        #detect_features(resized)
         # with concurrent.futures.ProcessPoolExecutor() as executor:
         #     executor.map(detect_features, imgs)
 
