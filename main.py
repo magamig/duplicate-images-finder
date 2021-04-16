@@ -300,7 +300,6 @@ def main():
         	results = executor.map(detect_features, resized)
 
        	for result in results:
-       		print(result)
        		# kp.append(k)
        		des.append(result)
 
@@ -315,7 +314,7 @@ def main():
         #     executor.map(detect_features, imgs)
 
 
-        similarity_check(resized)
+        # similarity_check(resized)
       
         # if args.delete:
         #         delete(duplicates)
